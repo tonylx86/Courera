@@ -180,7 +180,7 @@ var viewController = {
 
 
     init: function () {
-        gl.uniformMatrix4fv(projection, false, flatten(ortho(-15, 15, -15 * 800 / 1280, 15 * 800 / 1280, 0, 100)));
+        //gl.uniformMatrix4fv(projection, false, flatten(ortho(-15, 15, -15 * 800 / 1280, 15 * 800 / 1280, 0, 100)));
         //gl.uniformMatrix4fv(projection, false, flatten(perspective(90, 1280/800, 0.1, 50)));
 
         this.drawCtx = {
@@ -628,19 +628,74 @@ var viewController = {
         }
     },
 
+
     draw: function () {
 
-        gl.clearColor(1, 1, 1, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        var view;
+        var scale = scalem(0.5,0.5,0.5);
+        var w = 20, h = w*800/1280;
+        var d = 20;
+
+        gl.uniformMatrix4fv(projection, false, flatten(ortho(-w, w, -w * 800 / 1280, w * 800 / 1280, 0, 100)));
+
+        if (this.uiCtx.tripleView) {
+            gl.clearColor(1, 1, 1, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 
-        var view = this.camera.view;
-        this.groupList.forEach(function (g) {
-            g.body.render(view);
-        })
 
-        this.drawBackground();
+
+            this.camera.view  =  mult(translate(w/2,h/2,0), mult(scale,lookAt([d, 0, 0], [0, 0, 0], [0, 1, 0])));
+            view = this.camera.view;
+            this.groupList.forEach(function (g) {
+                g.body.render(view);
+            });
+            this.drawBackground();
+
+            this.camera.view  =  mult(translate(-w/2,h/2,0), mult(scale,lookAt([0, d, 0], [0, 0, 0], [0, 0, -1])));
+            view = this.camera.view;
+            this.groupList.forEach(function (g) {
+                g.body.render(view);
+            });
+            this.drawBackground();
+
+
+            this.camera.view  =  mult(translate(-w/2,-h/2,0), mult(scale,lookAt([0, 0, d], [0, 0, 0 ], [0, 1, 0])));
+            view = this.camera.view;
+            this.groupList.forEach(function (g) {
+                g.body.render(view);
+            });
+            this.drawBackground();
+
+
+
+            this.camera.view  =  mult(translate(w/2,-h/2,0), mult(scale,lookAt([d, d, d], [0, 1.40, 0], [0, 1, 0])));
+            view = this.camera.view;
+            this.groupList.forEach(function (g) {
+                g.body.render(view);
+            });
+
+            this.drawBackground();
+        }
+       else {
+
+            gl.clearColor(1, 1, 1, 1.0);
+           gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            this.camera.view  =  lookAt([d, d, d], [0, 0.5, 0], [0, 1, 0]);
+            view = this.camera.view;
+            this.groupList.forEach(function (g) {
+                g.body.render(view);
+            })
+
+            this.drawBackground();
+
+        }
+
     },
+
+
+
 
     drawBackground:function() {
         var x = new EntityNode([new Axis([1,0,0,1])],this.drawCtx);
@@ -652,9 +707,28 @@ var viewController = {
         y.render(this.camera.view);
         z.render(this.camera.view);
 
-        var plane = new EntityNode([new Plane()],this.drawCtx);
+
+
+
+        var plane2 = new EntityNode([new Plane(vec4(138/255,43/255,226/255,0.8))],this.drawCtx);
+
+        plane2.rotate(90,[1,0,0]);
+        plane2.magnify(10,1,10);
+        plane2.translate(0,-10,0);
+        plane2.render(this.camera.view);
+
+
+        var plane = new EntityNode([new Plane([0,0.5,1,0.8])],this.drawCtx);
         plane.magnify(10,1,10);
         plane.render(this.camera.view);
+
+        var plane3 = new EntityNode([new Plane(vec4(139/255,69/255,19/255,0.8))],this.drawCtx);
+
+        plane3.rotate(90,[0,0,1]);
+        plane3.magnify(10,1,10);
+        plane3.translate(0,10,0);
+        plane3.render(this.camera.view);
+
     }
 };
 

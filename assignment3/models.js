@@ -680,7 +680,22 @@ var _Plane = {
         gl.drawArrays(gl.TRIANGLE_FAN, 0, this.pts);
     }
 }
-var Plane = function () {};
+var Plane = function (color) {
+    if (color) {
+
+        var colors = [];
+        for (var i = 0; i < this.pts; i++) {
+            colors.push(color);
+        }
+        this.render =  function (ctx) {
+            gl.bindBuffer(gl.ARRAY_BUFFER,this.cBuffer);
+            gl.bufferSubData(gl.ARRAY_BUFFER,0,flatten(colors));
+            _Plane.render(ctx);
+        }
+
+    }
+};
+
 Plane.prototype = Object.create(_Plane);
 Plane.prototype.constructor = Plane;
 

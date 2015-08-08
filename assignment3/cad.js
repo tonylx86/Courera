@@ -91,6 +91,16 @@ window.onload = function init() {
     });
 
 
+    document.getElementById("triple").onchange = function(ev) {
+        if (ev.target.checked) {
+            viewController.uiCtx.tripleView = true;
+
+        }else{
+            viewController.uiCtx.tripleView = false;
+
+        }
+        viewController.draw()
+    };
 
     viewController.init();
 
