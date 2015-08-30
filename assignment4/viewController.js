@@ -1,5 +1,5 @@
 
-viewController = function (gl,canvas, basicModels){
+var viewController = function (gl,canvas, basicModels){
 
 
     var backgroundColor = vec4(0.1,0.1,0.1,1.0);
