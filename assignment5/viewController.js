@@ -711,7 +711,6 @@ viewController = function (gl,canvas, basicModels){
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         //console.log(uiCtx.animationScript)
 
-
         if (! uiCtx.offScreen)
         {
             if (uiCtx.animationScript) {
@@ -876,6 +875,7 @@ viewController = function (gl,canvas, basicModels){
 
 
 
+
         draw.requestAnimate = false;
         gl.bindFramebuffer(gl.FRAMEBUFFER, fbo_pick);
         gl.useProgram(program2);
@@ -963,7 +963,9 @@ viewController = function (gl,canvas, basicModels){
         var currLoc = clientToWindowCoord(vec2(event.clientX, event.clientY));
 
 
+
         if (uiCtx.cursorKeyDown) {
+
 
             if (uiCtx.operatingAxis) {
 
@@ -1007,6 +1009,7 @@ viewController = function (gl,canvas, basicModels){
             }
 
             else {
+
 
                 (function () {
 
@@ -1118,6 +1121,8 @@ viewController = function (gl,canvas, basicModels){
 
 
         else if (uiCtx.focusID >= 0) {
+
+
 
             (function () {
                 draw.requestAnimate = false;
@@ -1426,24 +1431,17 @@ viewController = function (gl,canvas, basicModels){
         //ambient.display(false);
 
 
-        var numEvents = 2;
-        var allReady = 0; //2 start draw
+        //var numEvents = 1;
+        //var allReady = 0;
 
 
         var earthTex, checkBoardTex,cubeMap;
 
 
-        var image = new Image();
-        image.src ="earth.jpg";
 
 
-        image.onload = function () {
-            earthTex = loadTexture( image);
-            allReady++;
-            if (allReady === numEvents) {
-                draw();
-            }
-        };
+        var image = document.getElementById("earth");
+        earthTex = loadTexture( image);
 
         function loadTexture(image) {
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); // Flip the image's y axis
@@ -1585,66 +1583,88 @@ viewController = function (gl,canvas, basicModels){
                     gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
 
 
-                   allReady ++;
-                    if (allReady === numEvents) {
-                        draw();
-                    }
+                   //allReady ++;
+                   // if (allReady === numEvents) {
+                   //     draw();
+                   // }
                 }
 
             }
 
 
-            var front = new Image();
+            //var front = new Image();
+            //
+            //front.onload = function () {
+            //    configureTexture(front, gl.TEXTURE_CUBE_MAP_POSITIVE_Z);
+            //
+            //
+            //};
+            //front.src = "./skybox/front.jpg";
 
-            front.onload = function () {
-                configureTexture(front, gl.TEXTURE_CUBE_MAP_POSITIVE_Z);
+            var front = document.getElementById("front");
+            configureTexture(front, gl.TEXTURE_CUBE_MAP_POSITIVE_Z);
 
-            };
-            front.src = "./skybox/front.jpg";
-
-            var back = new Image();
-            back.onload = function () {
-                configureTexture(back, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z);
-
-
-            };
-            back.src = "./skybox/back.jpg";
-
-            var up = new Image();
-            up.onload = function () {
-                configureTexture(up, gl.TEXTURE_CUBE_MAP_POSITIVE_Y);
+            //var back = new Image();
+            //back.onload = function () {
+            //    configureTexture(back, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z);
+            //
+            //
+            //};
+            //back.src = "./skybox/back.jpg";
 
 
-            }
-            up.src = "./skybox/up.jpg";
+            var back = document.getElementById("back");
+            configureTexture(back, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z);
 
-            var down = new Image();
-            down.onload = function () {
-                configureTexture(down,gl.TEXTURE_CUBE_MAP_NEGATIVE_Y);
+            //var up = new Image();
+            //up.onload = function () {
+            //    configureTexture(up, gl.TEXTURE_CUBE_MAP_POSITIVE_Y);
+            //
+            //
+            //}
+            //up.src = "./skybox/up.jpg";
 
-            }
-            down.src = "./skybox/down.jpg";
+            var up =  document.getElementById("up");
+            configureTexture(up, gl.TEXTURE_CUBE_MAP_POSITIVE_Y);
 
-            var left = new Image();
-            left.onload = function () {
-                configureTexture(left,gl.TEXTURE_CUBE_MAP_NEGATIVE_X);
+            //var down = new Image();
+            //down.onload = function () {
+            //    configureTexture(down,gl.TEXTURE_CUBE_MAP_NEGATIVE_Y);
+            //
+            //}
+            //down.src = "./skybox/down.jpg";
 
-            }
-            left.src = "./skybox/left.jpg";
+            var down = document.getElementById("down");
+            configureTexture(down,gl.TEXTURE_CUBE_MAP_NEGATIVE_Y);
 
-            var right = new Image();
-            right.onload = function () {
-                configureTexture(right,gl.TEXTURE_CUBE_MAP_POSITIVE_X);
+            //var left = new Image();
+            //left.onload = function () {
+            //    configureTexture(left,gl.TEXTURE_CUBE_MAP_NEGATIVE_X);
+            //
+            //}
+            //left.src = "./skybox/left.jpg";
 
-            }
-            right.src = "./skybox/right.jpg";
+            var left = document.getElementById("left");
+            configureTexture(left,gl.TEXTURE_CUBE_MAP_NEGATIVE_X);
 
+            //var right = new Image();
+            //right.onload = function () {
+            //    configureTexture(right,gl.TEXTURE_CUBE_MAP_POSITIVE_X);
+            //
+            //}
+            //right.src = "./skybox/right.jpg";
+
+            var right = document.getElementById("right");
+            configureTexture(right,gl.TEXTURE_CUBE_MAP_POSITIVE_X);
 
             return cubeMap;
         }
 
-        cubeMap = configureCubeMap();
+       cubeMap = configureCubeMap();
 
+        gl.uniform1i(gl.currProgram.uniformVariables.uCubeSampler,1);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+        gl.uniform1f(gl.currProgram.uniformVariables.uFlagCubeTex, 0.0);
 
         var cube = new EntityNode(basicModels.cube);
         cube.setScale(1,1,1);
@@ -1713,11 +1733,14 @@ viewController = function (gl,canvas, basicModels){
         uiCtx.animationScript = function () {
             drawSkyBox();
             drawReflectBall();
-        }
+
+        };
 
 
 
-        
+        draw.requestAnimate = true;
+        draw();
+
     }
 
 
@@ -1931,7 +1954,7 @@ viewController = function (gl,canvas, basicModels){
 
 
 
-    draw.requestAnimate = true;
+
 
 
 }
